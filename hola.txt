@@ -37,13 +37,17 @@ type Person {
   type Query { 
   personCount: Int!
   allPersons: [Person]!
+  findPerson: (name: String): Person
   }
 `
 
 const resolvers = {
     Query: { 
         personCount: () => personas.length,
-        allPersons: () => personas
+        allPersons: () => personas,
+        findPerson: (root, args) => {
+          return person.find(person => person.name === name)
+        }
     }
 }
 
