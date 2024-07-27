@@ -81,18 +81,30 @@ const typeDefs = `#graphql
     author: String!
     description: String
     quantity: Int!
+    detail: String!
   }
 
   type Query {
-    books: [Book]
+    bookCount: Int!
+    books: [Book]!
+    findBook(title: String!): Book
   }
 `;
 
 const resolvers = {
     Query: {
       books: () => books,
+      bookCount: () => books.length,
+      findBook: (root, args) => {
+        const { title } = args
+        return books.find(book => book.title === title)
+      }
     },
+    Book: {
+      detail: (root) => `${root.title} by ${root.author} `
+    },   //root es lo que se resolvio antes, es en realidad un prev
 };
+
 
 
 const server = new ApolloServer({
@@ -106,3 +118,5 @@ const { url } = await startStandaloneServer(server, {
 });
   
 console.log(`🚀  Server ready at: ${url}`);  
+console.log(`🚀  Server ready at: ${url}`);  
+
