@@ -1,3 +1,4 @@
+
 import {ApolloServer, gql} from '@apollo/server'
 
 const personas = [
@@ -24,7 +25,7 @@ const personas = [
   ];
   
   
-const typeDef = gql `
+const typeDefs = gql `
 type Person {
   name: String!
   phone: String    
@@ -46,7 +47,7 @@ const resolvers = {
     }
 }
 
-const server = new ApolloServer({
+const server = new ApolloServer ({
     typeDefs,
     resolvers
 })
