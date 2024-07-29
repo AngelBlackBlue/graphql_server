@@ -102,7 +102,7 @@ const resolvers = {
     },
     Book: {
       detail: (root) => `${root.title} by ${root.author} `
-    },   //root es lo que se resolvio antes, es en realidad un prev
+    },   //root es lo que se resolvio antes
 };
 
 
