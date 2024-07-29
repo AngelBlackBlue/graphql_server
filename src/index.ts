@@ -1,8 +1,17 @@
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
+import { GraphQLError } from 'graphql';
+import { v4 as uuidv4 } from 'uuid';
 
+interface Book {
+  id: string;
+  title: string;
+  author: string;
+  description?: string;
+  quantity: number;
+}
 
-const books = [
+const books: Book[] = [
   {
     id: "d3d4f60a-2b60-4b6c-a95c-7a2d78dbba39",  
     title: 'The Awakening',
@@ -89,20 +98,44 @@ const typeDefs = `#graphql
     books: [Book]!
     findBook(title: String!): Book
   }
+
+  type Mutation {
+    addBook(
+      title: String!
+      author: String! 
+      description: String 
+      quantity: Int!
+      ): Book
+  }
 `;
 
 const resolvers = {
     Query: {
       books: () => books,
       bookCount: () => books.length,
-      findBook: (root, args) => {
+      findBook: (root: any, args: Book) => {
         const { title } = args
         return books.find(book => book.title === title)
       }
     },
     Book: {
-      detail: (root) => `${root.title} by ${root.author} `
+      detail: (root: Book) => `${root.title} by ${root.author} `
     },   //root es lo que se resolvio antes
+
+    Mutation: { 
+      addBook: (root:any, args: Book) => {
+        if(books.find(book => book.title === args.title)){ 
+          throw new GraphQLError('Title already exists', {
+            extensions: {
+              code: 'BAD_USER_INPUT',
+              invalidArgs: args.title
+            }
+          })
+        }
+        const book = { ...args, id: uuidv4() }
+        books.push(book)
+        return book
+      }}
 };
 
 
