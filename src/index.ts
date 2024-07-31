@@ -3,139 +3,154 @@ import { startStandaloneServer } from '@apollo/server/standalone';
 import { GraphQLError } from 'graphql';
 import { v4 as uuidv4 } from 'uuid';
 
-interface Book {
-  id: string;
-  title: string;
-  author: string;
-  description?: string;
-  quantity: number;
-}
 
-const books: Book[] = [
+const persons = [
   {
-    id: "d3d4f60a-2b60-4b6c-a95c-7a2d78dbba39",  
-    title: 'The Awakening',
-    author: 'Kate Chopin',
-    description: 'A novel about a woman\'s self-discovery in the 19th century.',
-    quantity: 4,
-  },
-  { 
-    id: "a29c4c5b-21c6-4d8d-a9d7-fc573e2e5c3a",  
-    title: 'City of Glass',
-    author: 'Paul Auster',
-    description: 'A detective story and existential meditation on identity.',
-    quantity: 2,
+    id: "d3d4f60a-2b60-4b6c-a95c-7a2d78dbba39",
+    name: "John Doe",
+    phone: "555-1234",
+    street: "123 Elm St",
+    city: "Springfield"
   },
   {
-    id: "e8b8c780-6a8d-4b68-9a5b-3f4f8c5e5b8a",
-    title: '1984',
-    author: 'George Orwell',
-    description: 'A dystopian novel set in a totalitarian society.',
-    quantity: 5,
+    id: "b7f41be7-6e8b-4d6d-a5a4-1f9ed9c2341d",
+    name: "Jane Smith",
+    phone: "555-5678",
+    street: "456 Maple Ave",
+    city: "Greenville"
   },
   {
-    id: "c1f7b77a-894a-41e9-9f88-2e5c7d6e5f8b",
-    title: 'Pride and Prejudice',
-    author: 'Jane Austen',
-    description: 'A classic novel about love and societal expectations.',
-    quantity: 3,
+    id: "9f4470b8-734e-4fbb-90bc-29b6f8078d4d",
+    name: "Alice Johnson",
+    phone: "555-8765",
+    street: "789 Oak Dr",
+    city: "Fairview"
   },
   {
-    id: "d7f9b98c-1e8f-4b7a-9c8e-7d2f8c5e9d7a",
-    title: 'To Kill a Mockingbird',
-    author: 'Harper Lee',
-    description: 'A novel about racial injustice in the Deep South.',
-    quantity: 6,
+    id: "ae1d5f25-7a39-481e-8e59-4a9b47a5c8b1",
+    name: "Bob Brown",
+    phone: "555-4321",
+    street: "101 Pine Ln",
+    city: "Centerville"
   },
   {
-    id: "f3e7b88a-5b8d-4a9c-8d6e-3f7c8e5b9d8a",
-    title: 'Moby-Dick',
-    author: 'Herman Melville',
-    description: 'A novel about the voyage of the whaling ship Pequod.',
-    quantity: 2,
+    id: "c3d2e391-593d-4c38-8980-9db8f163cc2e",
+    name: "Carol Davis",
+    phone: "555-6543",
+    street: "202 Birch St",
+    city: "Riverside"
   },
   {
-    id: "a8f9b97c-2d8f-4c7a-9c8e-8e7c5d8f9a7b",
-    title: 'War and Peace',
-    author: 'Leo Tolstoy',
-    description: 'A historical novel that chronicles the French invasion of Russia.',
-    quantity: 4,
+    id: "f8a7c6e2-bfc9-45c8-8cbf-ea9f8c96f2d7",
+    name: "David Evans",
+    street: "303 Cedar Ave",
+    city: "Lakeside"
   },
   {
-    id: "b9e8c780-7a8d-4a68-9b5c-3f8e7c5d8b7a",
-    title: 'The Great Gatsby',
-    author: 'F. Scott Fitzgerald',
-    description: 'A novel about the American Dream and the Roaring Twenties.',
-    quantity: 7,
+    id: "0c6c48b4-2043-41af-b8bb-4a4d303fb1b1",
+    name: "Emma Wilson",
+    phone: "555-3456",
+    street: "404 Walnut Rd",
+    city: "Hilltop"
   },
   {
-    id: "c8d7b97a-2e8f-4b6a-9d8e-7f8c5d9a8e7b",
-    title: 'The Catcher in the Rye',
-    author: 'J.D. Salinger',
-    quantity: 5,
+    id: "2d829baf-2f84-4b2d-94b7-6c6096f4b0d8",
+    name: "Frank Harris",
+    phone: "555-6789",
+    street: "505 Spruce Blvd",
+    city: "Meadowbrook"
   },
   {
-    id: "d9f8b88c-3a8d-4b7a-9c8e-8f7e5d8c9b7a",
-    title: 'The Odyssey',
-    author: 'Homer',
-    description: 'An epic poem about the journey of Odysseus.',
-    quantity: 3,
+    id: "5b9c1f1e-64d7-4a4c-8a7d-292d9a93849e",
+    name: "Grace Lee",
+    street: "606 Fir Ct",
+    city: "Brookfield"
+  },
+  {
+    id: "8a9278d9-61c1-4d6f-9889-1f4dcb1f94a7",
+    name: "Henry Clark",
+    street: "707 Cypress Way",
+    city: "Pleasantville"
   }
 ];
 
+
 const typeDefs = `#graphql
-  type Book {
+   
+  enum YesNo {
+    YES
+    NO
+  }
+  
+  type Address {
+    street: String!
+    city: String!
+  }
+
+  type Person {
     id: ID!
-    title: String!
-    author: String!
-    description: String
-    quantity: Int!
-    detail: String!
+    name: String!
+    phone: String
+    address: Address!
   }
 
   type Query {
-    bookCount: Int!
-    books: [Book]!
-    findBook(title: String!): Book
+    personCount: Int!
+    allPersons(phone: YesNo): [Person]!
+    findPerson(name: String!): Person
   }
 
   type Mutation {
-    addBook(
-      title: String!
-      author: String! 
-      description: String 
-      quantity: Int!
-      ): Book
-  }
+    addPerson(
+      name: String!
+      phone: String
+      street: String!
+      city: String!
+    ): Person
+}
 `;
 
 const resolvers = {
     Query: {
-      books: () => books,
-      bookCount: () => books.length,
-      findBook: (root: any, args: Book) => {
-        const { title } = args
-        return books.find(book => book.title === title)
+      personCount: () => persons.length,
+      allPersons: (root, args) => {
+        if (!args.phone) return persons;
+        const byPhone = person => 
+           args.phone === 'YES' ? person.phone : !person.phone;
+        return persons.filter(byPhone);
+
+      },
+      findPerson: (root, args) =>{
+        const {name} = args;
+        return persons.find(person => person.name === name);
       }
     },
-    Book: {
-      detail: (root: Book) => `${root.title} by ${root.author} `
-    },   //root es lo que se resolvio antes
+
+    Person: {
+      address: (root) => {
+        return { 
+          street: root.street,
+          city: root.city
+        }
+      }
+    },
+
 
     Mutation: { 
-      addBook: (root:any, args: Book) => {
-        if(books.find(book => book.title === args.title)){ 
+      addPerson: (root, args) => {
+        if(persons.find(person => person.name === args.name)){ 
           throw new GraphQLError('Title already exists', {
             extensions: {
               code: 'BAD_USER_INPUT',
-              invalidArgs: args.title
+              invalidArgs: args.name
             }
           })
         }
-        const book = { ...args, id: uuidv4() }
-        books.push(book)
-        return book
+        const person = { ...args, id: uuidv4() }
+        persons.push(person)
+        return person
       }}
+
 };
 
 
