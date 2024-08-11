@@ -1,15 +1,9 @@
 import mongoose from "mongoose";
-import UniqueValidator from "mongoose-unique-validator";
+// import UniqueValidator from "mongoose-unique-validator";
+import { person } from "../types/person";
 
 const { Schema } = mongoose;
 
-interface person {
-    id: string;
-    name: string;
-    phone: string;
-    street: string;
-    city: string;
-}
 
 
 const schema = new Schema({
@@ -47,5 +41,5 @@ const schema = new Schema({
     
 })
 
-schema.plugin(UniqueValidator); // this is to make sure that the id and name are unique
-export default mongoose.model<person>("Person", schema); 
+// schema.plugin(UniqueValidator); // this is to make sure that the id and name are unique
+export default mongoose.model<person>("PersonSchema", schema); 
